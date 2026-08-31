@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masjid Display</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="screen">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mosque-icon">🕌</div>
+        <div>
+          <div class="mosque-name" id="mosqueName">MASJID AL-IKHLAS</div>
+          <div class="subtitle">PUSAT INFORMASI MASJID</div>
+        </div>
+      </div>
+      <div class="date-box">
+        <div id="dayDate">Senin, 31 Agustus 2026</div>
+        <div class="hijri" id="hijriDate">9 Rabiul Awal 1448 H</div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="clock" id="clock">00:00:00</div>
+      <div class="status" id="status">Selamat datang di masjid</div>
+      <div class="countdown" id="countdown">Memuat jadwal...</div>
+    </section>
+
+    <section class="prayer-grid" id="prayerGrid"></section>
+
+    <section class="bottom-grid">
+      <article class="panel announcement">
+        <div class="panel-title">📢 PENGUMUMAN</div>
+        <div class="ticker-wrap">
+          <div class="ticker" id="ticker">
+            Selamat datang di masjid. Mohon menjaga kebersihan, ketenangan, dan ketertiban selama berada di area masjid.
+          </div>
+        </div>
+      </article>
+
+      <article class="panel quote">
+        <div class="panel-title">📖 RENUNGAN</div>
+        <div id="quoteText">“Sebaik-baik kalian adalah yang belajar Al-Qur’an dan mengajarkannya.”</div>
+        <div class="quote-source" id="quoteSource">— HR. Bukhari</div>
+      </article>
+    </section>
+
+    <footer>
+      <span>Mohon nonaktifkan suara ponsel selama berada di dalam masjid.</span>
+      <span id="fullscreenHint">Tekan F11 untuk fullscreen</span>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

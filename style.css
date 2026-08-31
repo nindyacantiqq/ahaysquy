@@ -1,0 +1,253 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg: #071b17;
+  --panel: #0d2923;
+  --panel-2: #12352d;
+  --text: #f4f8f5;
+  --muted: #a8beb6;
+  --accent: #d9b75a;
+  --accent-soft: rgba(217, 183, 90, .15);
+  --next: #e8c968;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, Arial, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.screen {
+  width: 100vw;
+  min-height: 100vh;
+  padding: clamp(20px, 3vw, 52px);
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto;
+  gap: clamp(14px, 1.7vw, 28px);
+  background:
+    radial-gradient(circle at 15% 10%, rgba(217,183,90,.09), transparent 30%),
+    radial-gradient(circle at 90% 80%, rgba(44,112,91,.16), transparent 35%),
+    var(--bg);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mosque-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(217,183,90,.45);
+  border-radius: 16px;
+  background: var(--accent-soft);
+  font-size: 30px;
+}
+
+.mosque-name {
+  font-size: clamp(20px, 2.2vw, 36px);
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+
+.subtitle {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: clamp(9px, .8vw, 13px);
+  letter-spacing: .18em;
+}
+
+.date-box {
+  text-align: right;
+  color: var(--muted);
+  font-size: clamp(11px, 1vw, 16px);
+  line-height: 1.6;
+}
+
+.date-box .hijri {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.hero {
+  text-align: center;
+  padding: clamp(4px, 1vw, 14px) 0;
+}
+
+.clock {
+  font-size: clamp(60px, 10vw, 150px);
+  line-height: .95;
+  font-weight: 800;
+  letter-spacing: .04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.status {
+  margin-top: 12px;
+  color: var(--accent);
+  font-size: clamp(13px, 1.25vw, 21px);
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.countdown {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: clamp(11px, 1vw, 16px);
+}
+
+.prayer-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: clamp(8px, 1vw, 16px);
+}
+
+.prayer {
+  position: relative;
+  min-height: clamp(90px, 10vw, 150px);
+  padding: clamp(12px, 1.3vw, 22px);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 18px;
+  background: linear-gradient(145deg, var(--panel-2), var(--panel));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: transform .2s ease, border-color .2s ease;
+}
+
+.prayer.next {
+  border-color: rgba(217,183,90,.8);
+  background: linear-gradient(145deg, rgba(217,183,90,.2), var(--panel));
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.18);
+}
+
+.prayer .name {
+  color: var(--muted);
+  font-size: clamp(11px, 1vw, 16px);
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.prayer .time {
+  margin-top: 7px;
+  font-size: clamp(25px, 3vw, 48px);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.next-label {
+  position: absolute;
+  top: 9px;
+  right: 11px;
+  font-size: 8px;
+  color: var(--accent);
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1.25fr .75fr;
+  gap: clamp(10px, 1.2vw, 18px);
+  min-height: 0;
+}
+
+.panel {
+  min-width: 0;
+  padding: clamp(14px, 1.5vw, 24px);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 18px;
+  background: rgba(13,41,35,.82);
+}
+
+.panel-title {
+  color: var(--accent);
+  font-size: clamp(10px, .9vw, 14px);
+  font-weight: 800;
+  letter-spacing: .12em;
+  margin-bottom: 10px;
+}
+
+.ticker-wrap {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ticker {
+  display: inline-block;
+  padding-left: 100%;
+  animation: ticker 22s linear infinite;
+  color: var(--text);
+  font-size: clamp(12px, 1vw, 17px);
+}
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+.quote {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#quoteText {
+  font-size: clamp(13px, 1.15vw, 19px);
+  line-height: 1.55;
+}
+
+.quote-source {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: clamp(10px, .85vw, 14px);
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  color: var(--muted);
+  font-size: clamp(9px, .75vw, 12px);
+  padding-top: 4px;
+}
+
+@media (max-width: 800px) {
+  body { overflow: auto; }
+  .screen { min-height: 100vh; }
+  .topbar { align-items: flex-start; flex-direction: column; }
+  .date-box { text-align: left; }
+  .prayer-grid { grid-template-columns: repeat(2, 1fr); }
+  .bottom-grid { grid-template-columns: 1fr; }
+  footer { flex-direction: column; }
+}
+
+@media (max-width: 480px) {
+  .screen { padding: 16px; gap: 12px; }
+  .prayer-grid { grid-template-columns: 1fr 1fr; }
+  .mosque-icon { width: 46px; height: 46px; font-size: 23px; }
+}
