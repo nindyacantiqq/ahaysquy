@@ -7,8 +7,7 @@
   --text: #f4f8f5;
   --muted: #a8beb6;
   --accent: #d9b75a;
-  --accent-soft: rgba(217, 183, 90, .15);
-  --next: #e8c968;
+  --accent-soft: rgba(217,183,90,.15);
 }
 
 * { box-sizing: border-box; }
@@ -22,10 +21,7 @@ html, body {
   font-family: Inter, Arial, sans-serif;
 }
 
-body {
-  min-height: 100vh;
-  overflow: hidden;
-}
+body { min-height: 100vh; overflow: hidden; }
 
 .screen {
   width: 100vw;
@@ -47,11 +43,7 @@ body {
   gap: 24px;
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
+.brand { display: flex; align-items: center; gap: 16px; }
 
 .mosque-icon {
   width: 58px;
@@ -84,15 +76,9 @@ body {
   line-height: 1.6;
 }
 
-.date-box .hijri {
-  color: var(--accent);
-  font-weight: 600;
-}
+.date-box .hijri { color: var(--accent); font-weight: 600; }
 
-.hero {
-  text-align: center;
-  padding: clamp(4px, 1vw, 14px) 0;
-}
+.hero { text-align: center; padding: clamp(4px, 1vw, 14px) 0; }
 
 .clock {
   font-size: clamp(60px, 10vw, 150px);
@@ -134,7 +120,6 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  transition: transform .2s ease, border-color .2s ease;
 }
 
 .prayer.next {
@@ -192,10 +177,7 @@ body {
   margin-bottom: 10px;
 }
 
-.ticker-wrap {
-  overflow: hidden;
-  white-space: nowrap;
-}
+.ticker-wrap { overflow: hidden; white-space: nowrap; }
 
 .ticker {
   display: inline-block;
@@ -210,11 +192,7 @@ body {
   to { transform: translateX(-100%); }
 }
 
-.quote {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
+.quote { display: flex; flex-direction: column; justify-content: center; }
 
 #quoteText {
   font-size: clamp(13px, 1.15vw, 19px);

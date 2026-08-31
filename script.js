@@ -1,45 +1,38 @@
-// ===============================
-// PENGATURAN DISPLAY MASJID
-// ===============================
-const CONFIG = {
-  mosqueName: "MASJID AL-IKHLAS",
+let CONFIG = null;
+let prayerNames = [];
 
-  // Ganti jam di bawah sesuai jadwal masjid.
-  prayerTimes: {
-    Subuh: "04:45",
-    Dzuhur: "12:00",
-    Ashar: "15:20",
-    Maghrib: "18:00",
-    Isya: "19:10"
-  },
+async function loadData() {
+  try {
+    const response = await fetch("data.json", { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    CONFIG = await response.json();
+    prayerNames = Object.keys(CONFIG.prayerTimes || {});
+    applyConfig();
+    renderPrayerCards();
+    updateAll();
+    rotateQuote();
+    setInterval(updateAll, 1000);
+    setInterval(rotateQuote, (CONFIG.settings?.quoteIntervalSeconds || 10) * 1000);
+  } catch (error) {
+    console.error(error);
+    document.getElementById("status").textContent = "Gagal memuat data.json";
+    document.getElementById("countdown").textContent =
+      "Pastikan project dijalankan melalui GitHub Pages atau local server.";
+  }
+}
 
-  announcement:
-    "Selamat datang di masjid. Mohon menjaga kebersihan, ketenangan, dan ketertiban selama berada di area masjid. Mari makmurkan masjid dengan ibadah dan kebaikan.",
+function applyConfig() {
+  document.getElementById("mosqueName").textContent = CONFIG.mosqueName;
+  document.querySelector(".subtitle").textContent =
+    CONFIG.subtitle || "PUSAT INFORMASI MASJID";
+  document.getElementById("ticker").textContent =
+    CONFIG.announcement || "";
+  document.getElementById("footerText").textContent =
+    CONFIG.footerText || "";
 
-  quotes: [
-    {
-      text: "“Sebaik-baik kalian adalah yang belajar Al-Qur’an dan mengajarkannya.”",
-      source: "— HR. Bukhari"
-    },
-    {
-      text: "“Shalatlah kalian sebagaimana kalian melihat aku shalat.”",
-      source: "— HR. Bukhari"
-    },
-    {
-      text: "“Kebersihan adalah bagian dari iman.”",
-      source: "— Makna yang masyhur dalam ajaran Islam"
-    }
-  ],
-
-  // Jika true, countdown akan berhenti pada waktu salat berikutnya.
-  // Atur durasi iqamah bila ingin menampilkan countdown iqamah.
-  iqamahMinutes: 10
-};
-
-const prayerNames = Object.keys(CONFIG.prayerTimes);
-
-document.getElementById("mosqueName").textContent = CONFIG.mosqueName;
-document.getElementById("ticker").textContent = CONFIG.announcement;
+  const speed = CONFIG.settings?.tickerSpeedSeconds || 22;
+  document.querySelector(".ticker").style.animationDuration = `${speed}s`;
+}
 
 function parseTime(time) {
   const [hours, minutes] = time.split(":").map(Number);
@@ -51,11 +44,7 @@ function formatCountdown(totalSeconds) {
   const h = Math.floor(totalSeconds / 3600);
   const m = Math.floor((totalSeconds % 3600) / 60);
   const s = totalSeconds % 60;
-
-  if (h > 0) {
-    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-  }
-  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
 function renderPrayerCards() {
@@ -74,36 +63,36 @@ function renderPrayerCards() {
   });
 }
 
-function getNextPrayer(now = new Date()) {
-  const currentMinutes = now.getHours() * 60 + now.getMinutes();
-  const currentSeconds = now.getSeconds();
-
-  for (const name of prayerNames) {
-    const prayerMinute = parseTime(CONFIG.prayerTimes[name]);
-    if (prayerMinute > currentMinutes ||
-        (prayerMinute === currentMinutes && currentSeconds === 0)) {
-      return { name, minute: prayerMinute };
-    }
-  }
-
-  // Kalau semua jadwal hari ini sudah lewat, arahkan ke Subuh besok.
-  return {
-    name: prayerNames[0],
-    minute: parseTime(CONFIG.prayerTimes[prayerNames[0]]) + 24 * 60
-  };
-}
-
-function updateNextPrayer(now) {
-  const next = getNextPrayer(now);
-  const nowSeconds =
+function getNextPrayer(now) {
+  const currentSeconds =
     now.getHours() * 3600 +
     now.getMinutes() * 60 +
     now.getSeconds();
 
-  let targetSeconds = next.minute * 60;
-  if (targetSeconds <= nowSeconds) targetSeconds += 24 * 3600;
+  for (const name of prayerNames) {
+    const target = parseTime(CONFIG.prayerTimes[name]) * 60;
+    if (target > currentSeconds) {
+      return { name, target };
+    }
+  }
 
-  const remaining = targetSeconds - nowSeconds;
+  return {
+    name: prayerNames[0],
+    target: parseTime(CONFIG.prayerTimes[prayerNames[0]]) * 60 + 86400
+  };
+}
+
+function updateNextPrayer(now) {
+  if (!prayerNames.length) return;
+
+  const next = getNextPrayer(now);
+  const currentSeconds =
+    now.getHours() * 3600 +
+    now.getMinutes() * 60 +
+    now.getSeconds();
+
+  let remaining = next.target - currentSeconds;
+  if (remaining < 0) remaining += 86400;
 
   document.querySelectorAll(".prayer").forEach(card => {
     const isNext = card.dataset.name === next.name;
@@ -121,8 +110,7 @@ function updateNextPrayer(now) {
   });
 
   document.getElementById("status").textContent =
-    `Menuju waktu ${next.name}`;
-
+    `MENUJU WAKTU ${next.name.toUpperCase()}`;
   document.getElementById("countdown").textContent =
     `${formatCountdown(remaining)} lagi`;
 }
@@ -146,40 +134,34 @@ function updateClock() {
       year: "numeric"
     });
 
-  // Kalender Hijriah dari Intl browser.
   try {
     const hijri = new Intl.DateTimeFormat("id-ID-u-ca-islamic", {
       day: "numeric",
       month: "long",
       year: "numeric"
     }).format(now);
-
     document.getElementById("hijriDate").textContent = `${hijri} H`;
   } catch {
-    document.getElementById("hijriDate").textContent =
-      "Kalender Hijriah";
+    document.getElementById("hijriDate").textContent = "Kalender Hijriah";
   }
 
   updateNextPrayer(now);
 }
 
+function updateAll() {
+  updateClock();
+}
+
 let quoteIndex = 0;
 
 function rotateQuote() {
+  if (!CONFIG?.quotes?.length) return;
   const quote = CONFIG.quotes[quoteIndex];
   document.getElementById("quoteText").textContent = quote.text;
   document.getElementById("quoteSource").textContent = quote.source;
   quoteIndex = (quoteIndex + 1) % CONFIG.quotes.length;
 }
 
-renderPrayerCards();
-updateClock();
-rotateQuote();
-
-setInterval(updateClock, 1000);
-setInterval(rotateQuote, 10000);
-
-// Tekan F untuk mencoba fullscreen.
 document.addEventListener("keydown", event => {
   if (event.key.toLowerCase() === "f") {
     if (!document.fullscreenElement) {
@@ -189,3 +171,5 @@ document.addEventListener("keydown", event => {
     }
   }
 });
+
+loadData();
